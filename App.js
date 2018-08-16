@@ -1,15 +1,15 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+
 import Header from './Header';
 import Body from './Body';
 
-export default class App extends React.Component {
-  constructor() {
-    super();
+class App extends React.Component {
+  constructor(props) {
+    super(props);
     this.state = {
       tareas: [],
       tarea: '',
-    }
   }
 
   onChange = value => {
@@ -20,7 +20,7 @@ export default class App extends React.Component {
 
   addTask = () =>
     this.setState({
-      tareas: [...this.state.tareas, {tarea: this.state.tarea, key: Date.now()}],
+      tareas: [...this.state.tareas, { key: Date.now(), tarea: this.state.tarea, completed: false }],
       tarea: '',
     })
 
@@ -40,3 +40,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
 });
+
+export default App;
