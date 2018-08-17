@@ -1,15 +1,28 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { StyleSheet, Text, View } from 'react-native';
+import { addTarea, delTarea } from './actions/index';
 
 import Header from './Header';
 import Body from './Body';
+
+const mapStateToProps = state => {
+  return { tareas: state.tareas };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    addTarea: tarea => dispatch(addTarea(tarea)),
+    delTarea: key => dispatch(delTarea(key))
+  };
+}
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tareas: [],
       tarea: '',
+    };
   }
 
   onChange = value => {
@@ -18,17 +31,16 @@ class App extends React.Component {
     })
   }
 
-  addTask = () =>
-    this.setState({
-      tareas: [...this.state.tareas, { key: Date.now(), tarea: this.state.tarea, completed: false }],
-      tarea: '',
-    })
+  addTask = () => {
+    this.props.addTarea({ key: Date.now().toString(), tarea: this.state.tarea, completed: false });
+    this.setState({ tarea: '' });
+  }
 
   render() {
     return (
       <View style={styles.container}>
         <Header tarea={this.state.tarea} onChange={this.onChange} addTask={this.addTask}/>
-        <Body tareas={this.state.tareas}/>
+        <Body />
       </View>
     );
   }
@@ -41,4 +53,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default connect(mapStateToProps, mapDispatchToProps)(App);
