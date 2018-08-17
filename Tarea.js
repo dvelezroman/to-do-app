@@ -29,7 +29,7 @@ class Tarea extends Component {
     return (
       <View style={styles.container}>
       	<Text style={styles.texto}>{this.props.item.tarea}</Text>
-        <TouchableOpacity onPress={() => this.delTask(this.props.item.key)}>
+        <TouchableOpacity onPress={() => this._delTask(this.props.item.key)}>
           <Ionicons 
             name="md-trash"
             size={24}
