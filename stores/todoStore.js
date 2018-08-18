@@ -1,9 +1,17 @@
 import { EventEmitter } from 'events';
 import Dispatcher from '../dispatcher';
 import ActionTypes from '../constants';
+import { AsyncStorage } from 'react-native';
 
 const CHANGE = 'CHANGE';
 let _tareas = [];
+
+// guarda en el AsyncStorage
+function storeData(tareas) {
+    AsyncStorage.setItem('@AppMobileTODO:tareas', JSON.stringify(tareas))
+    .then(() => console.log('Se guardó la info..'))
+    .catch(err => console.log(err));
+  }
 
 class TodoStore extends EventEmitter {
 	constructor() {
@@ -24,11 +32,13 @@ class TodoStore extends EventEmitter {
 	// añade nueva tarea a la lista y emite un evento CHANGED
 	_addNewItem(item) {
 		_tareas.push(item);
+		storeData(_tareas);
 		this.emit(CHANGE);
 	}
 	// elimina una tarea por su key u emite un evento CHANGED
 	_delItem(key) {
 		_tareas = _tareas.filter(tarea => tarea.key != key);
+		storeData(_tareas);
 		this.emit(CHANGE);
 	}
 	// devuelve las tareas en la lista
