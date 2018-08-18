@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, View, Text, FlatList } from 'react-native';
+import { StyleSheet, View, Text, FlatList, AsyncStorage } from 'react-native';
 //FLUX STORE
 import TodoStore from './stores/todoStore';
+import TodoActions from './actions/todoActions';
 //FLUX STORE
 import Tarea from './Tarea';
 
@@ -16,25 +17,33 @@ class Body extends Component {
   constructor(){
     super();
     this.state = {
-      tareas: TodoStore.getAllItems()
+      tareas: [],
+      fetched: false,
     };
     this._onChange = this._onChange.bind(this);
   }
 // FLUX cada vez que cambie la lista de tareas, se dispara este evento y actualiza la lista de tareas
   _onChange() {
-    this.setState({ tareas: TodoStore.getAllItems() })
+    this.setState({ tareas: TodoStore.getAllItems() });
   }
-// FLUX
-  delTask = (key) => {
-    this.props.delTarea(key);
-  }
-// FLUX neceista que se declare el listener para que escuche los cambios
+
   componentWillMount() {
     TodoStore.addChangeListener(this._onChange);
   }
 
+  componentDidMount() {// saca del AsyncStorage
+    AsyncStorage.getItem('@AppMobileTODO:tareas')
+    .then(data => JSON.parse(data))
+    .then(tareas => {
+      for (let i=0; i< tareas.length; i++){
+        TodoActions.addNewItem(tareas[i]);
+      }
+    })
+    .catch(err => console.log(err));
+  }
+  
   componentWillUnmount() {
-    TodoStore.removeChangeListener(this._onChange);
+      TodoStore.removeChangeListener(this._onChange);
   }
 
   render() {

@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 //REDUX
 import { connect } from 'react-redux';
-import { addTarea, delTarea } from './actions/index';
+import { addTarea, delTarea, fetchTareas } from './actions/index';
 // REDUX
 // --------------------------------------------
 // FLUX
@@ -30,6 +30,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       tarea: '',
+      fetched: false,
     };
   }
 
@@ -54,6 +55,8 @@ class App extends React.Component {
     this.props.addTarea({ key: Date.now().toString(), tarea: this.state.tarea, completed: false });
     this.setState({ tarea: '' });
   }
+
+  // FLUX neceista que se declare el listener para que escuche los cambios
 
   render() {
     return (
