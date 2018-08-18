@@ -30,7 +30,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       tarea: '',
-      fetched: false,
+      fetching: false,
     };
   }
 

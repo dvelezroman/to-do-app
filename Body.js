@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, View, Text, FlatList, AsyncStorage } from 'react-native';
+import { StyleSheet, View, Text, FlatList, AsyncStorage, ActivityIndicator } from 'react-native';
 //FLUX STORE
 import TodoStore from './stores/todoStore';
 import TodoActions from './actions/todoActions';
@@ -18,7 +18,7 @@ class Body extends Component {
     super();
     this.state = {
       tareas: [],
-      fetched: false,
+      fetching: true,
     };
     this._onChange = this._onChange.bind(this);
   }
@@ -32,14 +32,18 @@ class Body extends Component {
   }
 
   componentDidMount() {// saca del AsyncStorage
+    setTimeout(() => this.setState({ fetching: false }), 3000);
     AsyncStorage.getItem('@AppMobileTODO:tareas')
     .then(data => JSON.parse(data))
     .then(tareas => {
       for (let i=0; i< tareas.length; i++){
         TodoActions.addNewItem(tareas[i]);
       }
+      // crea el efecto de que esta cargando la data
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err);
+    });
   }
   
   componentWillUnmount() {
@@ -55,10 +59,18 @@ class Body extends Component {
       	 <Text style={styles.title}>Lista de Tareas: </Text>
       	</View>
         <View style={styles.innerContainer2}>
+        { this.state.fetching && 
+          <ActivityIndicator
+            size="large" 
+            color="#640064" 
+          />
+        }
+        { !this.state.fetching && 
           <FlatList
             data={tareas}
             renderItem={({item}) => <Tarea item={item}/>}
           />
+        }
         </View>
       </View>
     );
